@@ -1,0 +1,89 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "object",
+    srcs = [
+        "dispatcher.cc",
+        "epoll_reader.cc",
+        "event.cc",
+        "event_dispatcher.cc",
+        "handle.cc",
+        "port_dispatcher.cc",
+        "timer_dispatcher.cc",
+        "tipc_chan_dispatcher.cc",
+        "tipc_port_dispatcher.cc",
+        "wait_state_observer.cc",
+        "unix_socket_server_dispatcher.cc",
+        "unix_socket_channel_dispatcher.cc",
+    ],
+    hdrs = [
+        "include/object/common.h",
+        "include/object/dispatcher.h",
+        "include/object/epoll_handler.h",
+        "include/object/epoll_reader.h",
+        "include/object/event.h",
+        "include/object/event_dispatcher.h",
+        "include/object/handle.h",
+        "include/object/port_dispatcher.h",
+        "include/object/state_observer.h",
+        "include/object/timer_dispatcher.h",
+        "include/object/tipc_chan_dispatcher.h",
+        "include/object/tipc_port_dispatcher.h",
+        "include/object/wait_state_observer.h",
+        "include/object/unix_socket_server_dispatcher.h",
+        "include/object/unix_socket_channel_dispatcher.h",
+    ],
+    copts = [
+        "-Werror",
+        "-Wall",
+        #"-Wthread-safety",
+        "-std=c++17",
+    ],
+    includes = ["include"],
+    deps = [
+        "//libfuchsia/zircon:kernel-headers",
+        "//libnebula-cpp:nebula-base",
+    ],
+)
+
+cc_binary(
+    name = "state_tracker_tests",
+    srcs = ["state_tracker_tests.cc"],
+    copts = [
+        "-Werror",
+        "-Wall",
+    ],
+    linkopts = ["-pthread"],
+    deps = [
+        ":object",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_binary(
+    name = "event_test",
+    srcs = ["event_test.cc"],
+    copts = [
+        "-Werror",
+        "-Wall",
+    ],
+    linkopts = ["-pthread"],
+    deps = [
+        ":object",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_binary(
+    name = "handle_test",
+    srcs = ["handle_test.cc"],
+    copts = [
+        "-Werror",
+        "-Wall",
+    ],
+    linkopts = ["-pthread"],
+    deps = [
+        ":object",
+        "@com_google_googletest//:gtest_main",
+    ],
+)

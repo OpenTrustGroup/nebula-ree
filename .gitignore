@@ -1,0 +1,9 @@
+*.o
+libs/
+obj/
+cscope.*
+.cquery_cache/
+version.bzl
+/.bazelrc
+/BUILD.bazel
+/WORKSPACE.bazel

@@ -1,0 +1,191 @@
+# Copyright 2021 GoldenRiver Technology Co., Ltd.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/nebula/nbl_sdk_library.gni")
+import("//build/package.gni")
+
+config("config") {
+  include_dirs = [
+    "include",
+    "//zircon/trusty/lib/include/user",
+  ]
+  cflags_cc = ["-fPIC"]
+}
+
+static_library("nebula-base") {
+  sources = [
+    "logging.cc",
+    "properties.cc",
+    "status.cc",
+    "strings.cc",
+  ]
+
+  public = [
+    "include/nebula/base/auto_lock.h",
+    "include/nebula/base/bits.h",
+    "include/nebula/base/logging.h",
+    "include/nebula/base/macros.h",
+    "include/nebula/base/mutex.h",
+    "include/nebula/base/null_lock.h",
+    "include/nebula/base/properties.h",
+    "include/nebula/base/scopeguard.h",
+    "include/nebula/base/self_pipe.h",
+    "include/nebula/base/semaphore.h",
+    "include/nebula/base/status.h",
+    "include/nebula/base/strings.h",
+    "include/nebula/base/thread_annotations.h",
+    "include/nebula/base/time.h",
+    "include/nebula/base/unique_fd.h",
+    "include/nebula/base/utils.h",
+  ]
+
+  public_configs = [ ":config" ]
+}
+
+static_library("nebula-ipc") {
+  sources = [
+    "chan_message_handler.cc",
+    "chan_message_reader.cc",
+    "chan_message_writer.cc",
+    "chan_unblock_waiter.cc",
+    "port_message_handler.cc",
+    "port_message_reader.cc",
+  ]
+
+  public = [
+    "include/lib/nebula/ipc/chan_messsage_handler.h",
+    "include/lib/nebula/ipc/chan_messsage_reader.h",
+    "include/lib/nebula/ipc/chan_messsage_writer.h",
+    "include/lib/nebula/ipc/chan_unblock_waiter.h",
+    "include/lib/nebula/ipc/port_messsage_handler.h",
+    "include/lib/nebula/ipc/port_messsage_reader.h",
+  ]
+
+  public_deps = [
+    ":nebula-base",
+    "//zircon/public/lib/async-loop-cpp",
+  ]
+
+  public_configs = [ ":config" ]
+}
+
+static_library("nebula-rpc") {
+  sources = [
+    "rpc_client.cc",
+    "rpc_completion_queue.cc",
+    "rpc_message_handler.cc",
+    "rpc_message_reader.cc",
+    "rpc_message_writer.cc",
+    "rpc_server.cc",
+  ]
+
+  public = [
+    "include/lib/nebula/rpc/message.h",
+    "include/lib/nebula/rpc/proto.h",
+    "include/lib/nebula/rpc/rpc_client.h",
+    "include/lib/nebula/rpc/rpc_completion_queue.h",
+    "include/lib/nebula/rpc/rpc_message_reader.h",
+    "include/lib/nebula/rpc/rpc_messsage_handler.h",
+    "include/lib/nebula/rpc/rpc_messsage_writer.h",
+    "include/lib/nebula/rpc/rpc_server.h",
+    "include/lib/nebula/rpc/test/utils.h",
+  ]
+
+  public_deps = [
+    ":nebula-ipc",
+  ]
+
+  public_configs = [ ":config" ]
+}
+
+executable("libnebula-base_tests") {
+  output_name = "libnebula-base_tests"
+  testonly = true
+
+  sources = [
+    "libnebula-base_manifest.c",
+    "properties_test.cc",
+    "selfpipe_test.cc",
+    "semaphore_test.cc",
+    "time_test.cc",
+  ]
+
+  deps = [
+    ":nebula-base",
+    "//third_party/googletest:gmock",
+    "//third_party/googletest:gtest_main",
+  ]
+}
+
+executable("libnebula-ipc_tests") {
+  output_name = "libnebula-ipc_tests"
+  testonly = true
+
+  sources = [
+    "libnebula-ipc_manifest.c",
+    "message_reader_unittests.cc",
+  ]
+
+  deps = [
+    ":nebula-ipc",
+    "//third_party/googletest:gtest_main",
+  ]
+}
+
+executable("libnebula-rpc_tests") {
+  output_name = "libnebula-rpc_tests"
+  testonly = true
+
+  sources = [
+    "libnebula-rpc_manifest.c",
+    "rpc_client_test.cc",
+    "rpc_completion_queue_test.cc",
+    "rpc_fallback_test.cc",
+    "rpc_loopback_test.cc",
+    "rpc_message_writer_test.cc",
+    "rpc_server_test.cc",
+  ]
+
+  deps = [
+    ":nebula-rpc",
+    "//third_party/googletest:gtest_main",
+  ]
+}
+
+package("libnebula-cpp_tests") {
+  system_image = true
+  testonly = true
+  deps = [
+    ":libnebula-base_tests",
+    ":libnebula-ipc_tests",
+    ":libnebula-rpc_tests",
+  ]
+  tests = [
+    {
+      name = "libnebula-base_tests"
+    },
+    {
+      name = "libnebula-ipc_tests"
+    },
+    {
+      name = "libnebula-rpc_tests"
+    },
+  ]
+}
+
+nbl_sdk_library("libnebula_cpp_sdk") {
+  name = "nebula-cpp"
+  category = "hee"
+  hdr_dir = "include"
+  libs = [
+    "libnebula-base.a",
+    "libnebula-ipc.a",
+    "libnebula-rpc.a",
+  ]
+  deps = [
+    ":nebula-base",
+    ":nebula-ipc",
+    ":nebula-rpc",
+  ]
+}

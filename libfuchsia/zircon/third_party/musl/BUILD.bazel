@@ -1,0 +1,14 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "musl",
+    hdrs = [
+        "include/threads.h",
+        "include/threads_inline.h",
+    ],
+    copts = [
+        "-Werror",
+        "-Wall",
+    ],
+    includes = ["include"],
+)

@@ -1,0 +1,15 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+package(default_visibility = ["//:ree_trusty_group"])
+
+filegroup(
+    name = "all",
+    srcs = glob(["**"]),
+)
+
+cc_binary(
+    name = "tipc-test",
+    srcs = ["tipc_test.c"],
+    linkopts = ["-lpthread"],
+    deps = ["//libtrusty:nbl_trusty"],
+)
