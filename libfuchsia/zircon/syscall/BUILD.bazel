@@ -1,0 +1,25 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "syscall",
+    srcs = [
+        "event.cc",
+        "handle.cc",
+        "object.cc",
+        "port.cc",
+        "timer.cc",
+        "trusty.cc",
+        "zircon.cc",
+        "unixsock.cc",
+    ],
+    copts = [
+        "-Werror",
+        "-Wall",
+    ],
+    deps = [
+        "//libfuchsia/zircon:system-headers",
+        "//libfuchsia/zircon/kernel/object",
+        "//libnebula-cpp:nebula-base",
+        "//libtrusty:nbl_trusty",
+    ],
+)

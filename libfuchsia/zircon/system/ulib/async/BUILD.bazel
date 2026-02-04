@@ -1,0 +1,71 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "async",
+    srcs = [
+        "include/lib/async/time.h",
+    ],
+    hdrs = [
+        "include/lib/async/dispatcher.h",
+        "include/lib/async/receiver.h",
+        "include/lib/async/task.h",
+        "include/lib/async/wait.h",
+    ],
+    copts = [
+        "-Werror",
+        "-Wall",
+    ],
+    includes = ["include"],
+    deps = [
+        "//libfuchsia/zircon:system-headers",
+        "//libfuchsia/zircon/system/ulib/zx",
+    ],
+)
+
+cc_library(
+    name = "async-cpp",
+    srcs = [
+        "auto_task.cpp",
+        "auto_wait.cpp",
+        "include/lib/async/cpp/time.h",
+        "receiver.cpp",
+        "task.cpp",
+        "wait.cpp",
+        "wait_with_timeout.cpp",
+    ],
+    hdrs = [
+        "include/lib/async/cpp/auto_task.h",
+        "include/lib/async/cpp/auto_wait.h",
+        "include/lib/async/cpp/receiver.h",
+        "include/lib/async/cpp/task.h",
+        "include/lib/async/cpp/wait.h",
+        "include/lib/async/cpp/wait_with_timeout.h",
+    ],
+    copts = [
+        "-Werror",
+        "-Wall",
+    ],
+    includes = ["include"],
+    deps = [
+        ":async",
+    ],
+)
+
+cc_library(
+    name = "async-default",
+    srcs = [
+        "default.c",
+    ],
+    hdrs = [
+        "include/lib/async/default.h",
+    ],
+    copts = [
+        "-Werror",
+        "-Wall",
+    ],
+    includes = ["include"],
+    deps = [
+        ":async",
+        "//libfuchsia/zircon/third_party/musl",
+    ],
+)

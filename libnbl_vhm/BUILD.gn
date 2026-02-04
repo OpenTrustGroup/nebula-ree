@@ -1,0 +1,7 @@
+config("config") {
+  include_dirs = [ "include/" ]
+}
+
+source_set("acrn_headers") {
+  public_configs = [ ":config" ]
+}

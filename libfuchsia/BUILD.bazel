@@ -1,0 +1,61 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "all",
+    srcs = glob(["**"]),
+)
+
+cc_library(
+    name = "libfuchsia",
+    linkopts = ["-pthread"],
+    deps = [
+        "//libfuchsia/zircon/system/ulib/async",
+        "//libfuchsia/zircon/system/ulib/async:async-cpp",
+        "//libfuchsia/zircon/system/ulib/async:async-default",
+        "//libfuchsia/zircon/system/ulib/async-loop",
+        "//libfuchsia/zircon/system/ulib/async-loop:async-loop-cpp",
+        "//libfuchsia/zircon/system/ulib/zx",
+    ],
+)
+
+cc_binary(
+    name = "tipc_chan_test",
+    srcs = ["tipc_chan_test.cc"],
+    copts = [
+        "-Werror",
+        "-Wall",
+    ],
+    linkopts = ["-pthread"],
+    deps = [
+        "//libfuchsia",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_binary(
+    name = "posix_test",
+    srcs = ["posix_test.cc"],
+    copts = [
+        "-Werror",
+        "-Wall",
+    ],
+    linkopts = ["-pthread"],
+    deps = [
+        "//libnebula-cpp:nebula-base",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_binary(
+    name = "unix_sock_test",
+    srcs = ["unix_sock_test.cc"],
+    copts = [
+        "-Werror",
+        "-Wall",
+    ],
+    linkopts = ["-pthread"],
+    deps = [
+        "//libfuchsia",
+        "@com_google_googletest//:gtest_main",
+    ],
+)

@@ -1,0 +1,37 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "system-headers",
+    hdrs = [
+        "system/public/zircon/assert.h",
+        "system/public/zircon/compiler.h",
+        "system/public/zircon/errors.h",
+        "system/public/zircon/listnode.h",
+        "system/public/zircon/syscalls.h",
+        "system/public/zircon/syscalls/port.h",
+        "system/public/zircon/types.h",
+        "system/public/zircon/pixelformat.h"
+    ],
+    includes = ["system/public/"],
+    strip_include_prefix = "system/public",
+    deps = [
+        # "//libandroid-base:android-base",
+        "//libfuchsia/trusty:system-headers",
+    ],
+)
+
+# Separate system/kernel headers to avoid using syscalls from kernel objects.
+cc_library(
+    name = "kernel-headers",
+    hdrs = [
+        "system/public/zircon/compiler.h",
+        "system/public/zircon/errors.h",
+        "system/public/zircon/syscalls/port.h",
+        "system/public/zircon/types.h",
+    ],
+    includes = ["system/public/"],
+    strip_include_prefix = "system/public",
+    deps = [
+        "//libfuchsia/trusty:system-headers",
+    ],
+)

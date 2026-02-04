@@ -1,0 +1,15 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "system-headers",
+    hdrs = [
+        "lib/include/user/trusty_ipc.h",
+        "lib/include/user/trusty_uuid.h",
+    ],
+    copts = [
+        "-Werror",
+        "-Wall",
+    ],
+    includes = ["lib/include/user/"],
+    strip_include_prefix = "lib/include/user",
+)

@@ -1,0 +1,65 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "machina",
+    srcs = [
+        "block_dispatcher.cc",
+        "io.cc",
+        "pci.cc",
+        "virtio_device.cc",
+        "virtio_pci.cc",
+        "virtio_queue.cc",
+        "virtio_queue_fake.cc",
+        "virtio_queue_waiter.cc",
+        "volatile_write_block_dispatcher.cc",
+        "virtio_descriptor_util.cc",
+        "msix_config.cc",
+    ],
+    hdrs = [
+        "address.h",
+        "bits.h",
+        "block_dispatcher.h",
+        "guest_config.h",
+        "interrupt_controller.h",
+        "io.h",
+        "memory.h",
+        "pci.h",
+        "virtio_device.h",
+        "virtio_device_fake.h",
+        "virtio_pci.h",
+        "virtio_queue.h",
+        "virtio_queue_fake.h",
+        "virtio_queue_waiter.h",
+        "volatile_write_block_dispatcher.h",
+        "virtio_descriptor_util.h",
+        "virtio_queue_base.h",
+        "msix.h",
+        "msix_config.h",
+    ],
+    include_prefix = "garnet/lib/machina",
+    deps = [
+        "//libfuchsia/garnet/public/lib/fxl",
+        "//libfuchsia/zircon/system/ulib/async:async-cpp",
+        "//libfuchsia/zircon/system/ulib/async-loop:async-loop-cpp",
+        "//libfuchsia/zircon/system/ulib/bitmap",
+        "//libfuchsia/zircon/system/ulib/ddk",
+        "//libfuchsia/zircon/system/ulib/fbl",
+        "//libfuchsia/zircon/system/ulib/virtio",
+        "//libfuchsia/zircon/system/ulib/zx",
+    ],
+)
+
+cc_test(
+    name = "machina-test",
+    srcs = [
+        "virtio_queue-unittest.cc",
+        "virtio_queue_waiter-unittest.cc",
+        "volatile_write_block_dispatcher-unittest.cc",
+        "virtio_descriptor_util-unittest.cc"
+    ],
+    linkstatic = True,
+    deps = [
+        ":machina",
+        "@com_google_googletest//:gtest_main",
+    ],
+)

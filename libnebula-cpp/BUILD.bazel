@@ -1,0 +1,161 @@
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "all",
+    srcs = glob(["**"]),
+)
+
+config_setting(
+    name = "clang-10",
+    define_values = {"clang-10": "true"}
+)
+
+DEFAULT_COPTS = [
+    "-Wall",
+    "-Wextra",
+    "-Wno-unused-parameter",
+    "-Wno-unused-lambda-capture",
+    "-Wno-user-defined-warnings",
+    "-Wno-unknown-warning-option",
+    "-Werror",
+] + select({
+    ":clang-10": ["-Wno-c99-designator"],
+    "//conditions:default": [""],
+})
+
+cc_library(
+    name = "nebula-base",
+    srcs = [
+        "logging.cc",
+        "properties.cc",
+        "status.cc",
+        "strings.cc",
+    ],
+    hdrs = [
+        "include/lib/nebula/base/auto_lock.h",
+        "include/lib/nebula/base/bits.h",
+        "include/lib/nebula/base/logging.h",
+        "include/lib/nebula/base/macros.h",
+        "include/lib/nebula/base/mutex.h",
+        "include/lib/nebula/base/null_lock.h",
+        "include/lib/nebula/base/parseint.h",
+        "include/lib/nebula/base/properties.h",
+        "include/lib/nebula/base/scopeguard.h",
+        "include/lib/nebula/base/self_pipe.h",
+        "include/lib/nebula/base/semaphore.h",
+        "include/lib/nebula/base/status.h",
+        "include/lib/nebula/base/strings.h",
+        "include/lib/nebula/base/thread_annotations.h",
+        "include/lib/nebula/base/time.h",
+        "include/lib/nebula/base/unique_fd.h",
+        "include/lib/nebula/base/utils.h",
+    ],
+    copts = DEFAULT_COPTS,
+    includes = ["include"],
+)
+
+cc_library(
+    name = "nebula-ipc",
+    srcs = [
+        "chan_message_handler.cc",
+        "chan_message_reader.cc",
+        "chan_message_writer.cc",
+        "chan_unblock_waiter.cc",
+        "port_message_handler.cc",
+        "port_message_reader.cc",
+    ],
+    hdrs = [
+        "include/lib/nebula/ipc/chan_message_handler.h",
+        "include/lib/nebula/ipc/chan_message_reader.h",
+        "include/lib/nebula/ipc/chan_message_writer.h",
+        "include/lib/nebula/ipc/chan_unblock_waiter.h",
+        "include/lib/nebula/ipc/port_message_handler.h",
+        "include/lib/nebula/ipc/port_message_reader.h",
+    ],
+    copts = DEFAULT_COPTS,
+    includes = ["include"],
+    deps = ["//libfuchsia"],
+)
+
+cc_library(
+    name = "nebula-rpc",
+    srcs = [
+        "rpc_client.cc",
+        "rpc_completion_queue.cc",
+        "rpc_message_handler.cc",
+        "rpc_message_reader.cc",
+        "rpc_message_writer.cc",
+        "rpc_server.cc",
+    ],
+    hdrs = [
+        "include/lib/nebula/rpc/message.h",
+        "include/lib/nebula/rpc/proto.h",
+        "include/lib/nebula/rpc/rpc_client.h",
+        "include/lib/nebula/rpc/rpc_completion_queue.h",
+        "include/lib/nebula/rpc/rpc_message_handler.h",
+        "include/lib/nebula/rpc/rpc_message_reader.h",
+        "include/lib/nebula/rpc/rpc_message_writer.h",
+        "include/lib/nebula/rpc/rpc_server.h",
+    ],
+    copts = DEFAULT_COPTS,
+    includes = ["include"],
+    deps = [
+        "//libnebula-cpp:nebula-ipc",
+    ],
+)
+
+cc_library(
+    name = "nebula-ipc-test-utils",
+    hdrs = ["include/lib/nebula/ipc/test/utils.h"],
+    includes = ["include"],
+    deps = ["//libfuchsia"],
+)
+
+cc_binary(
+    name = "libnebula-ipc_tests",
+    srcs = [
+        "message_reader_unittests.cc",
+    ],
+    copts = DEFAULT_COPTS,
+    linkopts = ["-pthread"],
+    deps = [
+        "//libnebula-cpp:nebula-ipc",
+        "//libnebula-cpp:nebula-ipc-test-utils",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_binary(
+    name = "libnebula-rpc_tests",
+    srcs = [
+        "rpc_client_test.cc",
+        "rpc_completion_queue_test.cc",
+        "rpc_fallback_test.cc",
+        "rpc_loopback_test.cc",
+        "rpc_message_writer_test.cc",
+        "rpc_server_test.cc",
+    ],
+    copts = DEFAULT_COPTS,
+    linkopts = ["-pthread"],
+    deps = [
+        "//libnebula-cpp:nebula-ipc-test-utils",
+        "//libnebula-cpp:nebula-rpc",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_binary(
+    name = "libnebula-base_tests",
+    srcs = [
+        "properties_test.cc",
+        "selfpipe_test.cc",
+        "semaphore_test.cc",
+        "time_test.cc",
+    ],
+    copts = DEFAULT_COPTS,
+    linkopts = ["-pthread"],
+    deps = [
+        "//libnebula-cpp:nebula-base",
+        "@googletest//:gtest_main",
+    ],
+)

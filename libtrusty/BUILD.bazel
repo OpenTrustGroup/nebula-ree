@@ -1,0 +1,27 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "all",
+    srcs = glob(["**"]),
+)
+
+filegroup(
+    name = "headers",
+    srcs = [
+        "include/trusty/tipc.h",
+        "include/trusty/trusty_ipc_ioctl.h",
+    ],
+)
+
+cc_library(
+    name = "nbl_trusty",
+    srcs = ["trusty.c"],
+    hdrs = [":headers"],
+    copts = ["-fPIC"],
+    includes = ["include"],
+    linkstatic = True,
+    local_defines = ["VERIFY_TA"],
+    strip_include_prefix = "include",
+)

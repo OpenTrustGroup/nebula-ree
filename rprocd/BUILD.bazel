@@ -1,0 +1,23 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+package(default_visibility = ["//:ree_trusty_group"])
+
+cc_binary(
+    name = "rprocd",
+    srcs = [
+        "main.cpp",
+        "net.cpp",
+        "net.h",
+        "tap.h",
+        "vhost.h",
+    ],
+    copts = [
+        "-Wall",
+        # "-Werror",
+    ],
+    linkopts = ["-lpthread"],
+    deps = [
+        "//libnebula-cpp:nebula-base",
+        "//libfuchsia",
+    ]
+)

@@ -1,0 +1,31 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+load("//:version.bzl", "NEBULA_VERSION_STR")
+
+package(
+    default_visibility = ["//:ree_trusty_group"],
+    features = ["no_copts_tokenization"],
+)
+
+filegroup(
+    name = "all",
+    srcs = glob(["**"]),
+)
+
+cc_binary(
+    name = "nblruncmd",
+    srcs = [
+        "nblruncmd.c",
+        "netprotocol.h",
+        "tipcprotocol.c",
+        "version.h",
+    ],
+    copts = [
+        "-Wall",
+        "-Werror",
+        "-DNEBULA_VERSION_STR=" + NEBULA_VERSION_STR,
+    ],
+    deps = [
+        "//libtrusty:nbl_trusty",
+        "@zircon//:system_headers",
+    ],
+)
