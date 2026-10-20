@@ -1,0 +1,36 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+package(default_visibility = ["//:ree_trusty_group"])
+
+cc_binary(
+    name = "gzfs_d",
+    srcs = [
+        "interface/fuse.cc",
+        "interface/getattr.cc",
+        "interface/open.cc",
+        "interface/read.cc",
+        "interface/readdir.cc",
+        "interface/statfs.cc",
+        "interface/interface.h",
+        "interface/gzfs_fuse.h",
+        "transport/vsock.cc",
+        "transport/vsock.h",
+        "transport/protocol.h",
+        "main.cc",
+    ],
+    copts = [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-DFUSE_USE_VERSION=317",
+        "-D_FILE_OFFSET_BITS=64",
+    ],
+    linkopts = [
+        "-lpthread",
+        "-ldl",
+        "-rdynamic",
+    ],
+    deps = [
+        "//fuse:fuse",
+    ],
+)
