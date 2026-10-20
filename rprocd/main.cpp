@@ -6,9 +6,8 @@
 #include <sstream>
 
 int main() {
-  std::stringstream ether_name;
-  ether_name << "rproc0";
-  RprocNet vnet(ether_name.str());
+  RprocNet vnet0("rproc0", "192.168.1.1", 0);
+  RprocNet vnet1("rproc1", "192.168.0.1", 1);
 
   async::Loop loop;
   loop.Run();

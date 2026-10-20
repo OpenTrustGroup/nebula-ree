@@ -5,17 +5,16 @@
 #include "net.h"
 #include "vhost.h"
 
-static std::string DefaultIP = "192.168.1.1";
 static std::string DefaultNetmask = "255.255.255.0";
 static constexpr char kRprocPath[] = "/dev/rproc-net";
 static constexpr char kVnetNumQueues = 2;
 
-NetBase::NetBase(std::string name)
-    : tap_(name),
-      ip_(DefaultIP), netmask_(DefaultNetmask) {}
+NetBase::NetBase(std::string name, std::string ip, int dev_index)
+    : tap_(name), ip_(ip), netmask_(DefaultNetmask), dev_index_(dev_index) {}
 
 int NetBase::set_backend(int fd, uint8_t queue_index, Tap* tap) {
   vhost_vring_file args = {
+      .dev_index = dev_index_,
       .index = queue_index,
       .fd = tap->raw_descriptor(),
   };
@@ -29,8 +28,8 @@ int NetBase::set_backend(int fd, uint8_t queue_index, Tap* tap) {
   return 0;
 }
 
-RprocNet::RprocNet(std::string name)
-  : NetBase(name), fd_(open(kRprocPath, O_RDWR)) {
+RprocNet::RprocNet(std::string name, std::string ip, int dev_index)
+  : NetBase(name, ip, dev_index), fd_(open(kRprocPath, O_RDWR)) {
 
   for (uint8_t idx = 0; idx < kVnetNumQueues; idx++) {
     auto status = set_backend(fd_, idx, &tap_);
