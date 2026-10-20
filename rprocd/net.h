@@ -10,17 +10,18 @@
 
 class NetBase {
  protected:
-  explicit NetBase(std::string name);
+  explicit NetBase(std::string name, std::string ip, int dev_index);
 
   int set_backend(int fd, uint8_t queue_index, Tap *tap);
   Tap tap_;
   std::string ip_;
   std::string netmask_;
+  unsigned int dev_index_;
 };
 
 class RprocNet : public NetBase {
  public:
-  RprocNet(std::string name);
+  RprocNet(std::string name, std::string ip, int dev_index);
 
  private:
   nebula::base::unique_fd fd_;

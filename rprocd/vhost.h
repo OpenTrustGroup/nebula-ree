@@ -20,6 +20,7 @@ struct vhost_vring_state {
 };
 
 struct vhost_vring_file {
+	unsigned int dev_index;
 	unsigned int index;
 	int fd; /* Pass -1 to unbind from file. */
 
